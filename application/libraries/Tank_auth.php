@@ -192,7 +192,7 @@ class Tank_auth
 			if($custom) $data['meta'] = $custom;
 
 			if ($email_activation) {
-				$data['new_email_key'] = md5(mt_rand().microtime());
+				$data['new_email_key'] = $this->generate_random_key();
 			}
 			if (!is_null($res = $this->ci->users->create_user($data, !$email_activation))) {
 				$data['user_id'] = $res['user_id'];
@@ -253,7 +253,7 @@ class Tank_auth
 				return $data;
 
 			} elseif ($this->ci->users->is_email_available($email)) {
-				$data['new_email_key'] = md5(mt_rand().microtime());
+				$data['new_email_key'] = $this->generate_random_key();
 				$this->ci->users->set_new_email($user_id, $email, $data['new_email_key'], FALSE);
 				return $data;
 
@@ -299,7 +299,7 @@ class Tank_auth
 					'user_id'		=> $user->id,
 					'username'		=> $user->username,
 					'email'			=> $user->email,
-					'new_pass_key'	=> md5(mt_rand().microtime()),
+					'new_pass_key'	=> $this->generate_random_key(),
 				);
 
 				$this->ci->users->set_password_key($user->id, $data['new_pass_key']);
@@ -439,7 +439,7 @@ class Tank_auth
 					return $data;
 
 				} elseif ($this->ci->users->is_email_available($new_email)) {
-					$data['new_email_key'] = md5(mt_rand().microtime());
+					$data['new_email_key'] = $this->generate_random_key();
 					$this->ci->users->set_new_email($user_id, $new_email, $data['new_email_key'], TRUE);
 					return $data;
 
@@ -876,8 +876,23 @@ class Tank_auth
 	 */
 	function strip_http($str){
 		return preg_replace('/^http:\/\//', '', $str);
-	}	
+	}
 
+	/**
+	 * Generate a random string based on kernel's random number generator
+	 * @return string
+	 */
+	public function generate_random_key(){
+    if ( function_exists('openssl_random_pseudo_bytes') ){
+      $key = md5(openssl_random_pseudo_bytes(1024, $cstrong) . microtime() . mt_rand() );
+    }
+    else {
+    	$randomizer = file_exists('/dev/urandom') ? '/dev/urandom' : '/dev/random';
+	    $key = md5(file_get_contents($randomizer, NULL, NULL, 0, 1024) . microtime() . mt_rand());
+    }
+
+    return $key;
+	}
 }
 
 /* End of file Tank_auth.php */
