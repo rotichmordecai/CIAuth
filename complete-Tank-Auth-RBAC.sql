@@ -15,7 +15,7 @@ CREATE  TABLE IF NOT EXISTS `ci_sessions` (
   `last_activity` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `user_data` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
   PRIMARY KEY (`session_id`) )
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -31,7 +31,7 @@ CREATE  TABLE IF NOT EXISTS `login_attempts` (
   `login` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
   `time` TIMESTAMP NOT NULL ,
   PRIMARY KEY (`id`) )
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -48,7 +48,7 @@ CREATE  TABLE IF NOT EXISTS `user_autologin` (
   `last_ip` VARCHAR(40) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
   `last_login` TIMESTAMP NOT NULL ,
   PRIMARY KEY (`key_id`, `user_id`) )
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -59,16 +59,16 @@ COLLATE = utf8_unicode_ci;
 DROP TABLE IF EXISTS `user_profiles` ;
 
 CREATE  TABLE IF NOT EXISTS `user_profiles` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(200) NULL DEFAULT '' ,
+  `id` INT UNSIGNED NOT NULL ,
+  `name` VARCHAR(255) NULL DEFAULT '' ,
   `gender` CHAR(1) NULL DEFAULT '' ,
-  `dob` DATE NULL ,
+  `dob` DATE NOT NULL ,
   `country` CHAR(2) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL DEFAULT '' ,
+  `timezone` VARCHAR(50) NULL DEFAULT '' ,
   `website` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL DEFAULT '' ,
   `modified` TIMESTAMP NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `name` (`name` ASC) )
-ENGINE = MyISAM
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -86,20 +86,20 @@ CREATE  TABLE IF NOT EXISTS `users` (
   `activated` TINYINT(1) NOT NULL DEFAULT 1 ,
   `banned` TINYINT(1) NOT NULL DEFAULT 0 ,
   `ban_reason` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
-  `new_password_key` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
+  `new_password_key` CHAR(32) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
   `new_password_requested` DATETIME NULL ,
   `new_email` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
   `new_email_key` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
   `approved` TINYINT(1) NULL COMMENT 'For acct approval.' ,
   `meta` VARCHAR(2000) NULL DEFAULT '' ,
-  `last_ip` VARCHAR(40) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
+  `last_ip` VARCHAR(45) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
   `last_login` DATETIME NOT NULL ,
   `created` DATETIME NOT NULL ,
   `modified` TIMESTAMP NOT NULL ,
   PRIMARY KEY (`id`) ,
-  INDEX `username` (`username` ASC) ,
-  INDEX `email` (`email` ASC) )
-ENGINE = MyISAM
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) ,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) )
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -115,8 +115,9 @@ CREATE  TABLE IF NOT EXISTS `permissions` (
   `description` VARCHAR(160) NULL ,
   `parent` VARCHAR(100) NULL ,
   `sort` TINYINT UNSIGNED NULL ,
-  PRIMARY KEY (`permission_id`) )
-ENGINE = MyISAM
+  PRIMARY KEY (`permission_id`) ,
+  UNIQUE INDEX `permission_UNIQUE` (`permission` ASC) )
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -127,12 +128,13 @@ COLLATE = utf8_unicode_ci;
 DROP TABLE IF EXISTS `roles` ;
 
 CREATE  TABLE IF NOT EXISTS `roles` (
-  `role_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `role_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `role` VARCHAR(50) NOT NULL ,
   `full` VARCHAR(50) NOT NULL ,
   `default` TINYINT(1) NOT NULL ,
-  PRIMARY KEY (`role_id`) )
-ENGINE = MyISAM
+  PRIMARY KEY (`role_id`) ,
+  UNIQUE INDEX `role_UNIQUE` (`role` ASC) )
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -143,10 +145,22 @@ COLLATE = utf8_unicode_ci;
 DROP TABLE IF EXISTS `role_permissions` ;
 
 CREATE  TABLE IF NOT EXISTS `role_permissions` (
-  `role_id` SMALLINT UNSIGNED NOT NULL ,
+  `role_id` TINYINT UNSIGNED NOT NULL ,
   `permission_id` SMALLINT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`role_id`, `permission_id`) )
-ENGINE = MyISAM
+  PRIMARY KEY (`role_id`, `permission_id`) ,
+  INDEX `role_id2_idx` (`role_id` ASC) ,
+  INDEX `permission_id2_idx` (`permission_id` ASC) ,
+  CONSTRAINT `role_id2`
+    FOREIGN KEY (`role_id` )
+    REFERENCES `roles` (`role_id` )
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `permission_id2`
+    FOREIGN KEY (`permission_id` )
+    REFERENCES `permissions` (`permission_id` )
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -158,9 +172,21 @@ DROP TABLE IF EXISTS `user_roles` ;
 
 CREATE  TABLE IF NOT EXISTS `user_roles` (
   `user_id` INT UNSIGNED NOT NULL ,
-  `role_id` SMALLINT UNSIGNED NOT NULL ,
-  PRIMARY KEY (`user_id`, `role_id`) )
-ENGINE = MyISAM
+  `role_id` TINYINT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`user_id`, `role_id`) ,
+  INDEX `user_id2_idx` (`user_id` ASC) ,
+  INDEX `role_id1_idx` (`role_id` ASC) ,
+  CONSTRAINT `user_id2`
+    FOREIGN KEY (`user_id` )
+    REFERENCES `users` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `role_id1`
+    FOREIGN KEY (`role_id` )
+    REFERENCES `roles` (`role_id` )
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -174,8 +200,20 @@ CREATE  TABLE IF NOT EXISTS `overrides` (
   `user_id` INT UNSIGNED NOT NULL ,
   `permission_id` SMALLINT UNSIGNED NOT NULL ,
   `allow` TINYINT(1) UNSIGNED NOT NULL ,
-  PRIMARY KEY (`user_id`, `permission_id`) )
-ENGINE = MyISAM
+  PRIMARY KEY (`user_id`, `permission_id`) ,
+  INDEX `user_id1_idx` (`user_id` ASC) ,
+  INDEX `permissions_id1_idx` (`permission_id` ASC) ,
+  CONSTRAINT `user_id1`
+    FOREIGN KEY (`user_id` )
+    REFERENCES `users` (`id` )
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `permission_id1`
+    FOREIGN KEY (`permission_id` )
+    REFERENCES `permissions` (`permission_id` )
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
@@ -184,3 +222,12 @@ COLLATE = utf8_unicode_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `roles`
+-- -----------------------------------------------------
+START TRANSACTION;
+INSERT INTO `roles` (`role_id`, `role`, `full`, `default`) VALUES (1, 'admin', 'Administrator', 0);
+INSERT INTO `roles` (`role_id`, `role`, `full`, `default`) VALUES (2, 'user', 'User', 1);
+
+COMMIT;

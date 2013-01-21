@@ -189,7 +189,7 @@ class Tank_auth
 				'approved'=>(int)$this->ci->config->item('acct_approval', 'tank_auth')
 			);
 			
-			if($custom) $data['meta'] = $custom;
+			$data['meta'] = $custom ? $custom : '';
 
 			if ($email_activation) {
 				$data['new_email_key'] = $this->generate_random_key();
@@ -761,7 +761,7 @@ class Tank_auth
 	/**
 	 * Overriding permissions method
 	 */
-	public function add_override($user_id, $permission, $allow){
+	public function add_override($user_id, $permission, $allow = 1){
 		return $this->ci->users->add_override($user_id, $permission, $allow);
 	}
 	public function remove_override($user_id, $permission){
