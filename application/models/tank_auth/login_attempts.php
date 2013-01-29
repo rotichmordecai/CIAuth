@@ -32,7 +32,8 @@ class Login_attempts extends CI_Model
 	{
 		$this->db->select('1', FALSE);
 		$this->db->where('ip_address', $ip_address);
-		if (strlen($login) > 0) $this->db->or_where('login', $login);
+		if (strlen($login) > 0)
+			$this->db->or_where('login', $login);
 
 		$qres = $this->db->get($this->table_name);
 		return $qres->num_rows();

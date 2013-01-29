@@ -19,7 +19,7 @@ class User_Autologin extends CI_Model
 		parent::__construct();
 
 		$ci =& get_instance();
-		$this->table_name		= $ci->config->item('db_table_prefix', 'tank_auth').$this->table_name;
+		$this->table_name				= $ci->config->item('db_table_prefix', 'tank_auth').$this->table_name;
 		$this->users_table_name	= $ci->config->item('db_table_prefix', 'tank_auth').$this->users_table_name;
 	}
 
@@ -40,7 +40,8 @@ class User_Autologin extends CI_Model
 		$this->db->where($this->table_name.'.user_id', $user_id);
 		$this->db->where($this->table_name.'.key_id', $key);
 		$query = $this->db->get();
-		if ($query->num_rows() == 1) return $query->row();
+		if ($query->num_rows() == 1)
+			return $query->row();
 		return NULL;
 	}
 
@@ -54,10 +55,10 @@ class User_Autologin extends CI_Model
 	function set($user_id, $key)
 	{
 		return $this->db->insert($this->table_name, array(
-			'user_id' 		=> $user_id,
-			'key_id'	 	=> $key,
-			'user_agent' 	=> substr($this->input->user_agent(), 0, 149),
-			'last_ip' 		=> $this->input->ip_address(),
+			'user_id'    => $user_id,
+			'key_id'     => $key,
+			'user_agent' => substr($this->input->user_agent(), 0, 149),
+			'last_ip'    => $this->input->ip_address(),
 		));
 	}
 
