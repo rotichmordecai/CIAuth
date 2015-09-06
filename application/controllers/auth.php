@@ -553,7 +553,7 @@ class Auth extends CI_Controller
 		$options = "<script>var RecaptchaOptions = {theme: 'custom', custom_theme_widget: 'recaptcha_widget'};</script>\n";
 
 		// Get reCAPTCHA JS and non-JS HTML
-		$html = recaptcha_get_html($this->config->item('recaptcha_public_key', 'tank_auth'));
+		$html = recaptcha_get_html($this->config->item('recaptcha_public_key', 'tank_auth'), NULL, $this->config->item('use_ssl', 'tank_auth'));
 
 		return $options.$html;
 	}
