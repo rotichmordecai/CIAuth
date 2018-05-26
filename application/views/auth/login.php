@@ -1,42 +1,32 @@
-
 <?php
-if ($use_username) {
-    $username = array(
-        'name' => 'username',
-        'id' => 'username',
-        'value' => set_value('username'),
-        'class' => 'form-control',
-        'placeholder' => 'Username',
-        'maxlength' => $this->config->item('username_max_length', 'tank_auth'),
-        'size' => 30,
-    );
-}
-$email = array(
-    'name' => 'email',
-    'id' => 'email',
-    'value' => set_value('email'),
+$login = array(
+    'name' => 'login',
+    'id' => 'login',
     'class' => 'form-control',
-    'placeholder' => 'Email',
+    'value' => set_value('login'),
     'maxlength' => 80,
     'size' => 30,
 );
+if ($login_by_username and $login_by_email) {
+    $login_label = 'Email or login';
+} elseif ($login_by_username) {
+    $login_label = 'Login';
+} else {
+    $login_label = 'Email';
+}
 $password = array(
     'name' => 'password',
     'id' => 'password',
-    'value' => set_value('password'),
     'class' => 'form-control',
-    'placeholder' => 'Password',
-    'maxlength' => $this->config->item('password_max_length', 'tank_auth'),
     'size' => 30,
 );
-$confirm_password = array(
-    'name' => 'confirm_password',
-    'id' => 'confirm_password',
-    'value' => set_value('confirm_password'),
+$remember = array(
+    'name' => 'remember',
+    'id' => 'remember',
     'class' => 'form-control',
-    'placeholder' => 'Confirm password',
-    'maxlength' => $this->config->item('password_max_length', 'tank_auth'),
-    'size' => 30,
+    'value' => 1,
+    'checked' => set_value('remember'),
+    'style' => 'margin:0;padding:0',
 );
 $captcha = array(
     'name' => 'captcha',
@@ -45,30 +35,18 @@ $captcha = array(
 );
 ?>
 <?php echo form_open($this->uri->uri_string()); ?>
-
-<?php if ($use_username): ?>
-    <div class="form-label-group">
-        <?php //echo form_label('Username', $username['id']);?>
-        <?php echo form_input($username); ?>
-        <?php echo form_error($username['name']); ?><?php echo isset($errors[$username['name']]) ? $errors[$username['name']] : ''; ?>
-    </div>
-<?php endif; ?>
 <div class="form-label-group">
-    <?php //echo form_label('Email Address', $email['id']);?>
-    <?php echo form_input($email); ?>
-    <?php echo form_error($email['name']); ?><?php echo isset($errors[$email['name']]) ? $errors[$email['name']] : ''; ?>
+    <?php echo form_label($login_label, $login['id']); ?>
+    <?php echo form_input($login); ?>
+    <?php echo form_error($login['name']); ?><?php echo isset($errors[$login['name']]) ? $errors[$login['name']] : ''; ?>
 </div>
 <div class="form-label-group">
-    <?php //echo form_label('Password', $password['id']);?>
+    <?php echo form_label('Password', $password['id']); ?>
     <?php echo form_password($password); ?>
-    <?php echo form_error($password['name']); ?>
+    <?php echo form_error($password['name']); ?><?php echo isset($errors[$password['name']]) ? $errors[$password['name']] : ''; ?>
 </div>
-<div class="form-label-group">
-    <?php //echo form_label('Confirm Password', $confirm_password['id']);?>
-    <?php echo form_password($confirm_password); ?>
-    <?php echo form_error($confirm_password['name']); ?>
-</div>
-<?php if ($captcha_registration) : ?>
+
+<?php if ($show_captcha) : ?>
     <?php if ($use_recaptcha) : ?>
         <div class="form-label-group">
             <div id="recaptcha_image"></div>
@@ -82,7 +60,7 @@ $captcha = array(
             <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" />
             <?php echo form_error('recaptcha_response_field'); ?>
             <?php echo $recaptcha_html; ?>
-        </div>                  
+        </div>
     <?php else : ?>
         <div class="form-label-group">
             <p>Enter the code exactly as it appears:</p>
@@ -96,14 +74,25 @@ $captcha = array(
     <?php endif; ?>
 <?php endif; ?>
 
+<div class="form-label-group">
+    <?php echo form_checkbox($remember); ?>
+    <?php echo form_label('Remember me', $remember['id']); ?>
+    <?php echo anchor('/auth/forgot_password/', 'Forgot password'); ?>
+    <?php
+    if ($this->config->item('allow_registration', 'tank_auth')) :
+        echo anchor('/auth/register/', 'Register');
+    endif;
+    ?>
+</div>
+
 <?php
 $data = array(
-    'name' => 'register',
+    'name' => 'submit',
     'id' => 'button',
     'value' => 'true',
     'type' => 'submit',
     'class' => 'btn btn-lg btn-primary btn-block',
-    'content' => 'Sign Up'
+    'content' => 'Sign In'
 );
 echo form_button($data);
 ?>

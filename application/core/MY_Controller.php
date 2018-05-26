@@ -23,7 +23,8 @@ class MY_Controller extends CI_Controller
         switch ($section) {
             case 'auth':
                 
-                $this->template->add_css('assets/css/bootstrap.min.css');
+                $this->template->add_css('assets/css/bootstrap/bootstrap.min.css');
+                $this->template->add_css('assets/css/css.css');
                 $this->template->add_js('assets/js/bootstrap.min.js');
 
                 break;

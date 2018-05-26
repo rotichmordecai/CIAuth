@@ -100,7 +100,8 @@ class Auth extends MY_Controller
                     $data['captcha_html'] = $this->_create_captcha();
                 }
             }
-            $this->load->view('auth/login_form', $data);
+            $this->template->write_view('content', $this->view_path . __FUNCTION__, $data);
+            $this->template->render();
         }
     }
 
@@ -112,7 +113,6 @@ class Auth extends MY_Controller
     public function logout()
     {
         $this->tank_auth->logout();
-
         $this->_show_message($this->lang->line('auth_message_logged_out'));
     }
 
