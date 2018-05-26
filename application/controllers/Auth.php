@@ -21,6 +21,11 @@ class Auth extends MY_Controller
         $this->load->library('form_validation');
         $this->template->set_template('auth');
         $this->initialize('auth');
+        
+        $query = $this->db->get_first('user');
+        foreach ($query->result() as $row) {
+            echo $row->id;
+        }
     }
 
     public function index()
