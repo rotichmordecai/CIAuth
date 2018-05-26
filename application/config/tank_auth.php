@@ -29,7 +29,7 @@ $config['phpass_hash_strength'] = 8;
 | 'allow_registration' = Registration is enabled or not
 | 'captcha_registration' = Registration uses CAPTCHA
 | 'email_activation' = Requires user to activate their account using email after registration.
-| 'email_activation_expire' = Time before users who don't activate their account getting deleted from database. Default is 48 hours (60*60*24*2).
+| 'email_activation_expire' = Time before user who don't activate their account getting deleted from database. Default is 48 hours (60*60*24*2).
 | 'email_account_details' = Email with account details is sent after registration (only when 'email_activation' is FALSE).
 | 'use_username' = Username is required or not.
 |

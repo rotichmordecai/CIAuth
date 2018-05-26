@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login_attempts`
+-- Table structure for table `user_attempt`
 --
 
-CREATE TABLE IF NOT EXISTS `login_attempts` (
+CREATE TABLE IF NOT EXISTS `user_attempt` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_address` varchar(40) COLLATE utf8_bin NOT NULL,
   `login` varchar(50) COLLATE utf8_bin NOT NULL,
@@ -47,10 +47,10 @@ CREATE TABLE IF NOT EXISTS `user_autologin` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_profiles`
+-- Table structure for table `user_profile`
 --
 
-CREATE TABLE IF NOT EXISTS `user_profiles` (
+CREATE TABLE IF NOT EXISTS `user_profile` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `country` varchar(20) COLLATE utf8_bin DEFAULT NULL,
@@ -61,10 +61,10 @@ CREATE TABLE IF NOT EXISTS `user_profiles` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `user`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) COLLATE utf8_bin NOT NULL,
   `password` varchar(255) COLLATE utf8_bin NOT NULL,

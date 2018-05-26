@@ -51,8 +51,8 @@ It's full featured
 * Login using username, email address or both (depending on config settings).
 * Registration is instant or after activation by email (optional).
 * "Remember me" option.
-* Forgot password (letting users pick a new password upon reactivation).
-* Change password or email for registered users.
+* Forgot password (letting user pick a new password upon reactivation).
+* Change password or email for registered user.
 * Email or password can be changed even before account is activated.
 * Ban user (optional).
 * User Profile (optional).

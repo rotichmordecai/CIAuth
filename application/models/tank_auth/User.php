@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * Users
+ * User
  *
  * This model represents user authentication data. It operates the following tables:
  * - user account data,
@@ -10,10 +10,10 @@
  * @package	Tank_auth
  * @author	Ilya Konyukhov (http://konyukhov.com/soft/)
  */
-class Users extends CI_Model
+class User extends CI_Model
 {
-	private $table_name			= 'users';			// user accounts
-	private $profile_table_name	= 'user_profiles';	// user profiles
+	private $table_name			= 'user';			// user accounts
+	private $profile_table_name	= 'user_profile';	// user profiles
 
 	function __construct()
 	{
@@ -140,7 +140,7 @@ class Users extends CI_Model
 
 	/**
 	 * Activate user if activation key is valid.
-	 * Can be called for not activated users only.
+	 * Can be called for not activated user only.
 	 *
 	 * @param	int
 	 * @param	string
@@ -173,7 +173,7 @@ class Users extends CI_Model
 	}
 
 	/**
-	 * Purge table of non-activated users
+	 * Purge table of non-activated user
 	 *
 	 * @param	int
 	 * @return	void
@@ -394,5 +394,5 @@ class Users extends CI_Model
 	}
 }
 
-/* End of file users.php */
-/* Location: ./application/models/auth/users.php */
+/* End of file user.php */
+/* Location: ./application/models/auth/user.php */
