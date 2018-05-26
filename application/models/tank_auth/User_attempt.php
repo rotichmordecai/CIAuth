@@ -1,4 +1,6 @@
-<?php if (!defined('BASEPATH')) {
+<?php
+
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -19,8 +21,8 @@ class User_attempt extends CI_Model
     {
         parent::__construct();
 
-        $ci =& get_instance();
-        $this->table_name = $ci->config->item('db_table_prefix', 'tank_auth').$this->table_name;
+        $ci = & get_instance();
+        $this->table_name = $ci->config->item('db_table_prefix', 'tank_auth') . $this->table_name;
     }
 
     /**
