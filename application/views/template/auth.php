@@ -24,7 +24,13 @@
     </head>
     <body>
 
-        <?php echo $content; ?>
+        <form class="form-signin">
+            <div class="text-center mb-4">
+                <?php echo $content; ?>
+            </div>
+        </form>
+
+
 
         <form class="form-signin">
             <div class="text-center mb-4">
